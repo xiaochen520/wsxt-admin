@@ -14,7 +14,7 @@
 				<template #dropdown>
 					<el-dropdown-menu>
 						<el-dropdown-item>个人资料</el-dropdown-item>
-						<el-dropdown-item>退出登录</el-dropdown-item>
+						<el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
 					</el-dropdown-menu>
 				</template>
 			</el-dropdown>
@@ -27,6 +27,23 @@ import { ArrowDown } from '@element-plus/icons-vue';
 
 const userAvatar = 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=default%20user%20avatar%20simple%20style&image_size=square';
 const userName = '默认用户';
+
+const handleLogout = () => {
+	// 退出登录逻辑
+	// 用户点击的时候需要一个弹窗，确认是否退出登录
+	ElMessageBox.confirm('确定退出登录吗？', '提示', {
+		confirmButtonText: '确定',
+		cancelButtonText: '取消',
+		type: 'warning'
+	}).then(() => {
+		// 退出登录成功后，跳转到登录页
+		router.push({ name: 'login' });
+		// 清除本地存储中的用户信息
+		localStorage.removeItem('token');
+		localStorage.removeItem('userInfo');
+		console.log('退出登录');
+	});
+};
 </script>
 
 <style lang="scss" scoped>
@@ -60,7 +77,6 @@ const userName = '默认用户';
 			gap: 10px;
 			cursor: pointer;
 			color: #333;
-
 			.user-name {
 				font-size: 14px;
 			}

@@ -2,8 +2,8 @@
 	<el-menu class="sidebar-menu" router :default-active="activeMenu" :default-openeds="openMenus">
 		<!-- logo -->
 		<div class="logo">
-			<!-- <img src="@/assets/chicken_logo.png" alt="logo" /> -->
-			<span class="logo-text">吴山学堂</span>
+			<img src="@/assets/chicken_logo.png" alt="logo" />
+			<span class="logo-text">认养一只鸡</span>
 		</div>
 
 		<!-- 菜单 -->
@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import { User, Calendar, Tickets } from '@element-plus/icons-vue';
+import { DataLine, Document, Present, User } from '@element-plus/icons-vue';
 import { useRoute } from 'vue-router';
 import { computed } from 'vue';
 
@@ -48,30 +48,48 @@ const openMenus = computed(() => {
 
 // 图标
 const icons = {
-	Calendar,
-	Tickets,
+	DataLine,
+	Document,
+	Present,
 	User,
 };
 
 // 菜单数据
 const menuItems = [
 	{
-		index: '/course',
-		route: '/course',
-		title: '课程管理',
-		icon: icons.Calendar,
-	},
-	{
-		index: '/order',
-		route: '/order',
-		title: '订单管理',
-		icon: icons.Tickets,
+		index: '/home',
+		route: '/home',
+		title: '概览',
+		icon: icons.DataLine,
 	},
 	{
 		index: '/user',
 		route: '/user',
 		title: '用户管理',
 		icon: icons.User,
+	},
+	{
+		index: '/order',
+		title: '订单管理',
+		icon: icons.Document,
+		children: [
+			{
+				index: '/order/adoptoption',
+				title: '认养订单列表',
+				route: '/order/adoptoption',
+			},
+			{
+				index: '/order/feed',
+				title: '饲料订单列表',
+				route: '/order/feed',
+			},
+		],
+	},
+	{
+		index: '/reward-store',
+		route: '/reward-store',
+		title: '兑换商城',
+		icon: icons.Present,
 	},
 ];
 </script>
@@ -108,8 +126,9 @@ const menuItems = [
 	.el-sub-menu__title {
 		display: flex;
 		align-items: center;
-		height: 36px;
+		height: 20px;
 		padding: 8px 0;
+		margin: 10px 0;
 		border-radius: 6px;
 		box-sizing: content-box;
 
@@ -135,7 +154,7 @@ const menuItems = [
 
 	// 二级菜单缩进
 	.el-sub-menu .el-menu-item {
-		padding-left: 50px !important;
+		padding-left: 40px !important;
 	}
 
 	.el-menu-item.is-active {

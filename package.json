@@ -1,5 +1,5 @@
 {
-	"name": "course-admin",
+	"name": "adopt-chicken",
 	"version": "0.0.0",
 	"private": true,
 	"type": "module",
@@ -12,6 +12,8 @@
 	"dependencies": {
 		"@tailwindcss/vite": "^4.2.2",
 		"@vueuse/core": "^14.2.1",
+		"@wangeditor/editor": "^5.1.23",
+		"@wangeditor/editor-for-vue": "^5.1.12",
 		"axios": "^1.14.0",
 		"echarts": "^6.0.0",
 		"element-plus": "^2.13.6",

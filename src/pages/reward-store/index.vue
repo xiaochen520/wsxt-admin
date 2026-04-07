@@ -8,18 +8,20 @@
                     <el-form-item label="商品名称:">
                         <el-input v-model="searchForm.name" placeholder="请输入商品名称"></el-input>
                     </el-form-item>
-      
+
                     <el-form-item>
                         <el-button type="primary" @click="handleSearch" :icon="Search">搜索</el-button>
                         <el-button @click="handleReset" link>重置</el-button>
+						
                     </el-form-item>
                 </el-form>
+				<el-button type="primary" @click="handleAdd">新增商品</el-button>
             </div>
         </el-card>
 
 		<!-- 商品卡片列表 -->
 		<div class="product-list">
-			<el-card v-for="product in products" :key="product.id" class="product-card">
+			<el-card v-for="product in products" :key="product.id" class="product-card" @click="handleEdit(product)">
 				<img :src="product.image" :alt="product.name" class="product-image" />
 				<div class="product-info">
 					<h3 class="product-name">{{ product.name }}</h3>
@@ -36,6 +38,8 @@
 
 <script setup>
 import { ref } from 'vue';
+import { Search } from '@element-plus/icons-vue';
+import router from '@/router';
 // 初始搜索参数
 const initialSearchForm = {
     username: '',
@@ -80,6 +84,31 @@ const products = ref([
 	},
 ]);
 
+// 新增商品
+const handleAdd = () => {
+    console.log('新增商品');
+    // 这里可以添加新增商品的逻辑
+	router.push({
+		name: 'addCommodity',
+		query: {
+			type: 'add',
+		}
+	 });
+};
+
+// 编辑商品
+const handleEdit = (product) => {
+    // 这里可以添加编辑商品的逻辑
+	router.push({
+		name: 'addCommodity',
+		query: {
+			type: 'edit',
+		}
+	 });
+};
+
+
+
 const handleSearch = () => {    // 搜索用户
     console.log('搜索参数:', searchForm.value);
     // 这里可以添加搜索逻辑
@@ -109,7 +138,10 @@ const handleReset = () => { // 重置搜索参数
 			}
 		}
 	}
-
+	.mb-4{
+		display: flex;
+		justify-content: space-between;
+	}
 	.product-list {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -117,7 +149,7 @@ const handleReset = () => { // 重置搜索参数
 		padding: 10px 10px 0;
 		.product-card {
 			transition: all 0.3s ease;
-
+			cursor: pointer;
 			&:hover {
 				transform: translateY(-5px);
 				box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);

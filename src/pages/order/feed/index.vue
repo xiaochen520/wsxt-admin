@@ -18,8 +18,8 @@
 		<!-- 订单列表卡片 -->
 		<el-card style="margin: 15px 10px 10px">
 			<div class="mb-4" style="padding-bottom: 20px">
-				<el-table :data="orderList" style="width: 100%">
-					<el-table-column label="饲料图片" width="120">
+				<el-table :height="height - 270" :data="orderList" style="width: 100%">
+					<el-table-column label="饲料图片">
 						<template #default="scope">
 							<img :src="scope.row.image" :alt="scope.row.productName" class="order-image" />
 						</template>
@@ -30,8 +30,8 @@
 					<!-- 操作列 -->
 					<el-table-column label="操作" width="180" fixed="right">
 						<template #default="scope">
-							<el-button type="primary" link size="mini" @click="handleViewDetail(scope.row)">查看详情</el-button>
-							<el-button type="danger" link size="mini" @click="handleDelete(scope.row)">删除</el-button>
+							<el-button type="primary" link size="small" @click="handleViewDetail(scope.row)">查看详情</el-button>
+							<el-button type="danger" link size="small" @click="handleDelete(scope.row)">删除</el-button>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -57,6 +57,10 @@
 <script setup>
 import { ref, reactive } from 'vue';
 import { Search } from '@element-plus/icons-vue';
+import { useWindowSize } from '@vueuse/core';
+
+const { width, height } = useWindowSize();
+console.log(width.value, height.value);
 
 const listQuery = reactive({
 	pageNo: 1,
