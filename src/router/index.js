@@ -36,6 +36,12 @@ const router = createRouter({
 				//   component: () => import('@/pages/reward-store'),
 				// },
 				{
+					path: '/order',
+					name: 'order',
+					title: '订单管理',
+					component: () => import('@/pages/order/index.vue'),
+				},
+				{
 					path: '/user',
 					name: 'user',
 					title: '用户管理',

@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import { DataLine, Document, Present, User } from '@element-plus/icons-vue';
+import { User, Calendar, Tickets } from '@element-plus/icons-vue';
 import { useRoute } from 'vue-router';
 import { computed } from 'vue';
 
@@ -48,9 +48,8 @@ const openMenus = computed(() => {
 
 // 图标
 const icons = {
-	DataLine,
-	Document,
-	Present,
+	Calendar,
+	Tickets,
 	User,
 };
 
@@ -60,7 +59,13 @@ const menuItems = [
 		index: '/course',
 		route: '/course',
 		title: '课程管理',
-		icon: icons.User,
+		icon: icons.Calendar,
+	},
+	{
+		index: '/order',
+		route: '/order',
+		title: '订单管理',
+		icon: icons.Tickets,
 	},
 	{
 		index: '/user',
