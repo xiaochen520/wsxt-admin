@@ -9,9 +9,9 @@
 
 			<h2 class="title">吴山学堂管理系统</h2>
 
-			<el-form ref="formRef" :model="form" :rules="rules" class="login-form" @submit.prevent="handleLogin">
-				<el-form-item label="账号" prop="phone">
-					<el-input v-model="form.phone" placeholder="请输入账号">
+			<el-form :model="form" class="login-form" @submit.prevent="handleRegister">
+				<el-form-item>
+					<el-input v-model="form.phone" placeholder="请输入账号" prefix-icon="User">
 						<template #prefix>
 							<el-icon>
 								<i-ep-user></i-ep-user>
@@ -20,8 +20,8 @@
 					</el-input>
 				</el-form-item>
 
-				<el-form-item label="密码" prop="password">
-					<el-input v-model="form.password" type="password" placeholder="请输入密码" show-password>
+				<el-form-item>
+					<el-input v-model="form.password" type="password" placeholder="请输入密码" prefix-icon="Lock" show-password>
 						<template #prefix>
 							<el-icon>
 								<i-ep-lock></i-ep-lock>
@@ -31,58 +31,74 @@
 				</el-form-item>
 
 				<el-form-item>
-					<el-button type="primary" class="login-btn" native-type="submit">登录</el-button>
+					<el-input v-model="form.confirmPassword" type="password" placeholder="请确认密码" prefix-icon="Lock" show-password>
+						<template #prefix>
+							<el-icon>
+								<i-ep-lock></i-ep-lock>
+							</el-icon>
+						</template>
+					</el-input>
+				</el-form-item>
+
+				<el-form-item>
+					<el-input v-model="form.inviteCode" placeholder="请输入邀请码" prefix-icon="Lock">
+						<template #prefix>
+							<el-icon>
+								<i-ep-link></i-ep-link>
+							</el-icon>
+						</template>
+					</el-input>
+				</el-form-item>
+
+				<el-form-item>
+					<el-button type="primary" class="login-btn" native-type="submit">注册</el-button>
 				</el-form-item>
 			</el-form>
 
-			<div class="tips" v-if="false">默认：admin / 123456</div>
-			<div class="register-link">
-				<span>还没有账号？</span>
-				<router-link to="/register">立即注册</router-link>
+			<div class="login-link">
+				<span>已有账号？</span>
+				<router-link to="/login">立即登录</router-link>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
+import { reactive } from 'vue';
 import router from '@/router';
-import { login } from '@/api';
+import { regist } from '@/api';
 
 const form = reactive({
 	phone: '',
 	password: '',
+	confirmPassword: '',
+	inviteCode: '',
 });
 
-const rules = ref({
-	phone: [{ required: true, message: '请输入账号', trigger: 'blur' }],
-	password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
-});
-
-const formRef = ref(null);
-
-const handleLogin = async () => {
-	if (!formRef.value) return;
-
-	formRef.value.validate(async (valid) => {
-		if (valid) {
-			try {
-				const res = await login(form);
-				if (res.code !== 200) {
-					ElMessage.error(res.msg);
-					return;
-				}
-
-				ElMessage.success('登录成功');
-				localStorage.setItem('token', res.data);
-				setTimeout(() => {
-					router.push({ name: 'course' });
-				}, 500);
-			} catch (error) {
-				ElMessage.error('账号或密码错误');
-			}
+const handleRegister = async () => {
+	if (!form.phone || !form.password || !form.confirmPassword) {
+		ElMessage.warning('请填写完整信息');
+		return;
+	}
+	if (form.password !== form.confirmPassword) {
+		ElMessage.warning('两次密码输入不一致');
+		return;
+	}
+	try {
+		const res = await regist({ phone: form.phone, password: form.password, inviteCode: form.inviteCode });
+		console.log(res);
+		if (res.code !== 200) {
+			ElMessage.error(res.msg);
+			return;
 		}
-	});
+
+		ElMessage.success('注册成功');
+		setTimeout(() => {
+			router.push({ name: 'login' });
+		}, 500);
+	} catch (error) {
+		ElMessage.error('注册失败，请稍后重试');
+	}
 };
 </script>
 
@@ -139,7 +155,7 @@ const handleLogin = async () => {
 		color: #999;
 	}
 
-	.register-link {
+	.login-link {
 		margin-top: 15px;
 		font-size: 14px;
 		a {

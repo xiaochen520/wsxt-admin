@@ -44,4 +44,12 @@ export default defineConfig({
 		},
 		extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
 	},
+	server: {
+		proxy: {
+			'/api': {
+				target: 'http://192.168.30.154:9001',
+				changeOrigin: true,
+			},
+		},
+	},
 });

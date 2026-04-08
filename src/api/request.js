@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const request = axios.create({
-	baseURL: import.meta.env.VITE_APP_API_URL,
+	// baseURL: import.meta.env.VITE_APP_API_URL,
 	timeout: 5000,
 });
 
@@ -49,8 +49,19 @@ request.interceptors.request.use(
 			config.params = cleanObject(config.params);
 		}
 
+		// 添加token到请求头
+		const token = localStorage.getItem('token');
+		if (token) {
+			config.headers['token'] = token;
+		}
+
 		return config;
 	},
+	(error) => Promise.reject(error)
+);
+
+request.interceptors.response.use(
+	(response) => response.data,
 	(error) => Promise.reject(error)
 );
 

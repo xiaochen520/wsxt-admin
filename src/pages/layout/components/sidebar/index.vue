@@ -2,8 +2,8 @@
 	<el-menu class="sidebar-menu" router :default-active="activeMenu" :default-openeds="openMenus">
 		<!-- logo -->
 		<div class="logo">
-			<img src="@/assets/chicken_logo.png" alt="logo" />
-			<span class="logo-text">认养一只鸡</span>
+			<img src="/logo.svg" alt="logo" />
+			<span class="logo-text">吴山学堂</span>
 		</div>
 
 		<!-- 菜单 -->
@@ -57,33 +57,22 @@ const icons = {
 // 菜单数据
 const menuItems = [
 	{
-		index: '/home',
-		route: '/home',
-		title: '概览',
+		index: '/course',
+		route: '/course',
+		title: '课程管理',
 		icon: icons.DataLine,
+	},
+	{
+		index: '/order',
+		title: '订单管理',
+		route: '/order',
+		icon: icons.Document,
 	},
 	{
 		index: '/user',
 		route: '/user',
 		title: '用户管理',
 		icon: icons.User,
-	},
-	{
-		index: '/order',
-		title: '订单管理',
-		icon: icons.Document,
-		children: [
-			{
-				index: '/order/adoptoption',
-				title: '认养订单列表',
-				route: '/order/adoptoption',
-			},
-			{
-				index: '/order/feed',
-				title: '饲料订单列表',
-				route: '/order/feed',
-			},
-		],
 	},
 	{
 		index: '/reward-store',
@@ -103,8 +92,10 @@ const menuItems = [
 	padding: 20px 0;
 
 	img {
-		width: 54px;
+		width: 32px;
 		margin-right: 10px;
+		transform: translate(-1000px, -1000px);
+		filter: drop-shadow(1000px 1000px 0 #fff);
 	}
 
 	.logo-text {
@@ -126,9 +117,8 @@ const menuItems = [
 	.el-sub-menu__title {
 		display: flex;
 		align-items: center;
-		height: 20px;
+		height: 36px;
 		padding: 8px 0;
-		margin: 10px 0;
 		border-radius: 6px;
 		box-sizing: content-box;
 

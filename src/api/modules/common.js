@@ -1,3 +1,5 @@
-import http from '@/request'
+import http from '../request';
 
-export const request = (data) => http.post('/common/request', data)
+export const regist = (data) => http.post('/api/user/register', data);
+
+export const login = (data) => http.post('/api/user/login', data);

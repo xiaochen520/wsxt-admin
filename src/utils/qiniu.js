@@ -9,13 +9,13 @@ export const QINIU_BASE_URL = 'https://zztp.zzxyg88.com/';
  * @returns {Promise<string>} token值
  */
 async function getToken() {
-	const url = '/scm-admin/admin/common/pictureUpToken';
+	const url = '/api/upload/token';
 	try {
 		const res = await http.get(url);
 		if (res.code !== 200) {
 			return Promise.reject(res.message);
 		}
-		return res.data;
+		return res.data.token;
 	} catch (error) {
 		console.error('获取七牛云token失败:', error);
 		return Promise.reject(error);
@@ -124,8 +124,6 @@ const defaultConfig = {
  * @returns {Promise<Object>} 上传结果
  */
 export function upload(file, config = {}) {
-	console.log('上传文件:', file);
-
 	// 验证文件参数
 	if (!file || typeof file !== 'object') {
 		return Promise.reject(new Error('无效的文件参数'));
@@ -169,9 +167,7 @@ export function upload(file, config = {}) {
 			};
 			getToken()
 				.then((token) => {
-					console.log('获取到token，开始压缩图片');
-
-					// 使用合并后的配置进行压缩
+					console.log(file, qiniu);
 					qiniu
 						.compressImage(file, mergeConfig.compress || {})
 						.then((data) => {

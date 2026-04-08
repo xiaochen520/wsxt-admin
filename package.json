@@ -1,5 +1,5 @@
 {
-	"name": "adopt-chicken",
+	"name": "course-admin",
 	"version": "0.0.0",
 	"private": true,
 	"type": "module",
@@ -19,6 +19,7 @@
 		"element-plus": "^2.13.6",
 		"normalize.css": "^8.0.1",
 		"pinia": "^3.0.4",
+		"qiniu-js": "^3.4.4",
 		"tailwindcss": "^4.2.2",
 		"unplugin-icons": "^23.0.1",
 		"vue": "^3.5.31",

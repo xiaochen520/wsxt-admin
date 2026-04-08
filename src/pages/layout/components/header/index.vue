@@ -24,6 +24,7 @@
 
 <script setup>
 import { ArrowDown } from '@element-plus/icons-vue';
+import router from '@/router';
 
 const userAvatar = 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=default%20user%20avatar%20simple%20style&image_size=square';
 const userName = '默认用户';
@@ -34,14 +35,10 @@ const handleLogout = () => {
 	ElMessageBox.confirm('确定退出登录吗？', '提示', {
 		confirmButtonText: '确定',
 		cancelButtonText: '取消',
-		type: 'warning'
+		type: 'warning',
 	}).then(() => {
-		// 退出登录成功后，跳转到登录页
-		router.push({ name: 'login' });
-		// 清除本地存储中的用户信息
 		localStorage.removeItem('token');
-		localStorage.removeItem('userInfo');
-		console.log('退出登录');
+		router.push({ name: 'login' });
 	});
 };
 </script>

@@ -46,18 +46,16 @@ import Header from './components/header';
 		padding: 0;
 		display: flex;
 		align-items: center;
-
 		position: sticky; // ⭐ 固定关键
 		top: 0;
 		z-index: 1000;
-
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	}
 
 	// 主体
 	.main {
-		padding: 0;
-		background: #f5f7fa;
+		padding: 10px;
+		background: #f5f5f5;
 		overflow: hidden; // ⭐ 防止 main 滚动
 	}
 
