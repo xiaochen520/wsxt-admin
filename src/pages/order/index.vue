@@ -41,7 +41,7 @@
 				<el-table-column label="操作" width="80">
 					<template #default="scope">
 						<el-button v-if="[2, 3].includes(scope.row.status)" type="primary" @click="showVoucher(scope.row)" plain size="small">查看凭证</el-button>
-						<el-button v-if="scope.row.status === 1" type="primary" @click="onRouterEdit(scope.row)" plain size="small">审核</el-button>
+						<el-button v-if="scope.row.status === 1" type="primary" @click="handleAudit(scope.row)" plain size="small">审核</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -64,14 +64,32 @@
 				<img :src="currentVoucherImage" alt="凭证图片" class="voucher-image" />
 			</div>
 		</el-dialog>
+
+		<!-- 审核弹框 -->
+		<el-dialog v-model="auditDialogVisible" title="订单审核" width="500">
+			<el-form :model="auditForm">
+				<el-form-item label="审核结果">
+					<el-radio-group v-model="auditForm.pass" @change="handlePassChange">
+						<el-radio :label="true">同意</el-radio>
+						<el-radio :label="false">拒绝</el-radio>
+					</el-radio-group>
+				</el-form-item>
+				<el-form-item v-if="!auditForm.pass" label="拒绝原因" prop="rejectReason">
+					<el-input type="textarea" v-model="auditForm.rejectReason" placeholder="请输入拒绝原因" />
+				</el-form-item>
+			</el-form>
+			<template #footer>
+				<el-button @click="auditDialogVisible = false">取消</el-button>
+				<el-button type="primary" @click="submitAudit">提交审核</el-button>
+			</template>
+		</el-dialog>
 	</div>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
 import { useWindowSize } from '@vueuse/core';
-import { orderList } from '@/api';
-import { ElMessage } from 'element-plus';
+import { orderList, auditOrder } from '@/api';
 
 const { width, height } = useWindowSize();
 
@@ -81,6 +99,14 @@ const orderArr = ref([]);
 // 凭证图片弹框
 const dialogVisible = ref(false);
 const currentVoucherImage = ref('');
+
+// 审核弹框
+const auditDialogVisible = ref(false);
+const currentOrder = ref(null);
+const auditForm = reactive({
+	pass: true,
+	rejectReason: '',
+});
 
 // 筛选表单
 const filterForm = reactive({
@@ -159,6 +185,51 @@ function getStatusType(status) {
 function showVoucher(order) {
 	currentVoucherImage.value = order.voucherImage;
 	dialogVisible.value = true;
+}
+
+// 处理审核
+function handleAudit(order) {
+	currentOrder.value = order;
+	auditForm.pass = true;
+	auditForm.rejectReason = '';
+	auditDialogVisible.value = true;
+}
+
+// 处理审核结果变更
+function handlePassChange() {
+	if (auditForm.pass) {
+		auditForm.rejectReason = '';
+	}
+}
+
+// 提交审核
+async function submitAudit() {
+	// 验证表单
+	if (!auditForm.pass) {
+		if (!auditForm.rejectReason) {
+			ElMessage.error('请输入拒绝原因');
+			return;
+		}
+	}
+
+	try {
+		const params = {
+			orderId: currentOrder.value.id,
+			pass: auditForm.pass,
+			rejectReason: auditForm.rejectReason,
+		};
+		const res = await auditOrder(params);
+		if (res.code !== 200) {
+			ElMessage.error(res.msg);
+			return;
+		}
+		ElMessage.success('审核成功');
+		auditDialogVisible.value = false;
+		// 重新获取订单列表
+		getOrderList();
+	} catch (error) {
+		ElMessage.error('审核失败，请稍后重试');
+	}
 }
 </script>
 
