@@ -47,20 +47,33 @@ const router = createRouter({
 					component: () => import('@/pages/order/index.vue'),
 				},
 				{
-					path: '/reward-store',
-					name: 'reward-store',
-					title: '兑换商城',
-					component: () => import('@/pages/reward-store'),
+					path: '/profile',
+					name: 'profile',
+					title: '个人资料',
+					component: () => import('@/pages/profile/index.vue'),
 				},
 				{
-					path: '/reward-store/addCommodity',
-					name: 'addCommodity',
-					title: '新增商品',
-					component: () => import('@/pages/reward-store/addCommodity.vue'),
+					path: '/payment',
+					name: 'payment',
+					title: '支付管理',
+					component: () => import('@/pages/payment/index.vue'),
 				},
 			],
 		},
 	],
+});
+
+router.beforeEach((to, from, next) => {
+	if (to.name === 'login' || to.name === 'register') {
+		next();
+	} else {
+		const token = localStorage.getItem('token');
+		if (token) {
+			next();
+		} else {
+			next({ name: 'login' });
+		}
+	}
 });
 
 export default router;

@@ -47,7 +47,7 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import router from '@/router';
-import { login } from '@/api';
+import { login, getCurrentUser } from '@/api';
 
 const form = reactive({
 	phone: '',
@@ -72,6 +72,8 @@ const handleLogin = async () => {
 					ElMessage.error(res.msg);
 					return;
 				}
+				const currentUser = await getCurrentUser();
+				localStorage.setItem('user', JSON.stringify(currentUser.data || '{}'));
 
 				ElMessage.success('登录成功');
 				localStorage.setItem('token', res.data);

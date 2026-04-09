@@ -1,9 +1,5 @@
 <template>
 	<div class="header-container">
-		<div class="logo">
-			<!-- <img src="@/assets/chicken_logo-trans.png" alt="logo" />
-			<span class="logo-text">认养一只鸡</span> -->
-		</div>
 		<div class="user-info">
 			<el-dropdown>
 				<span class="user-dropdown">
@@ -13,7 +9,7 @@
 				</span>
 				<template #dropdown>
 					<el-dropdown-menu>
-						<el-dropdown-item>个人资料</el-dropdown-item>
+						<el-dropdown-item @click="handleRouterProfile">个人资料</el-dropdown-item>
 						<el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
 					</el-dropdown-menu>
 				</template>
@@ -25,9 +21,15 @@
 <script setup>
 import { ArrowDown } from '@element-plus/icons-vue';
 import router from '@/router';
+import { ref, onMounted } from 'vue';
 
 const userAvatar = 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=default%20user%20avatar%20simple%20style&image_size=square';
-const userName = '默认用户';
+const userName = ref('默认用户');
+
+onMounted(() => {
+	const user = JSON.parse(localStorage.getItem('user') || '{}');
+	userName.value = user.phone || '默认用户';
+});
 
 const handleLogout = () => {
 	// 退出登录逻辑
@@ -41,12 +43,16 @@ const handleLogout = () => {
 		router.push({ name: 'login' });
 	});
 };
+
+function handleRouterProfile() {
+	router.push({ name: 'profile' });
+}
 </script>
 
 <style lang="scss" scoped>
 .header-container {
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-end;
 	align-items: center;
 	width: 100%;
 	height: 100%;

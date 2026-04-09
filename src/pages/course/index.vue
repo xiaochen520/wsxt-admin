@@ -3,10 +3,24 @@
 		<el-button type="primary" @click="onRouterAdd">添加课程</el-button>
 
 		<div class="table-container">
-			<el-table border :height="height - 140" :data="courseArr" style="width: 100%">
-				<el-table-column prop="name" label="课程名称"></el-table-column>
-				<el-table-column prop="price" label="课程价格"></el-table-column>
-				<el-table-column prop="status" label="状态"></el-table-column>
+			<el-table border :height="height - 145" :data="courseArr" style="width: 100%">
+				<el-table-column prop="name" label="课程名称" width="200"></el-table-column>
+				<el-table-column prop="name" label="版本数量" width="100">
+					<template #default="scope">
+						{{ scope.row.versions.length }}
+					</template>
+				</el-table-column>
+				<el-table-column label="版本">
+					<template #default="scope">
+						<div v-if="scope.row.versions && scope.row.versions.length > 0" class="version-list">
+							<el-tag effect="dark" v-for="(version, index) in scope.row.versions" :key="index" class="version-tag">
+								{{ version.name }}：¥{{ version.price }}
+							</el-tag>
+						</div>
+						<span v-else class="no-version">暂无版本</span>
+					</template>
+				</el-table-column>
+				<el-table-column prop="createTime" label="创建时间" width="200"></el-table-column>
 				<!-- 操作列 -->
 				<el-table-column label="操作" width="180">
 					<template #default="scope">
@@ -86,6 +100,20 @@ async function handleDelete(row) {
 		border-radius: 6px;
 		margin-top: 10px;
 		padding: 10px;
+	}
+
+	.version-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	.version-tag {
+	}
+
+	.no-version {
+		color: #909399;
+		font-size: 12px;
 	}
 }
 </style>

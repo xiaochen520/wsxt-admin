@@ -1,151 +1,88 @@
 <template>
 	<div class="user-container">
-		<!-- 搜索卡片 -->
-
-		<el-card style="margin: 15px 10px 10px">
-			<div class="mb-4">
-				<el-form :inline="true" :model="searchForm" class="demo-form-inline">
-					<el-form-item label="用户名称:">
-						<el-input v-model="searchForm.username" placeholder="请输入用户名称"></el-input>
-					</el-form-item>
-					<el-form-item label="手机号:">
-						<el-input v-model="searchForm.phone" placeholder="请输入手机号"></el-input>
-					</el-form-item>
-					<el-form-item label="状态:">
-						<el-select v-model="searchForm.status" placeholder="请选择状态" style="width: 120px">
-							<el-option label="启用" value="1"></el-option>
-							<el-option label="禁用" value="0"></el-option>
-						</el-select>
-					</el-form-item>
-					<el-form-item>
-						<el-button type="primary" @click="handleSearch" :icon="Search">搜索</el-button>
-						<el-button @click="handleReset" link>重置</el-button>
-					</el-form-item>
-				</el-form>
-			</div>
-		</el-card>
-
-		<!-- 用户列表卡片 -->
-
-		<el-card style="margin: 15px 10px 10px">
-			<div class="mb-4" style="padding-bottom: 20px">
-				<el-table :height="height - 270" :data="userList" style="width: 100%">
-					<el-table-column prop="username" label="用户信息" width="180"></el-table-column>
-					<el-table-column prop="phone" label="鸡蛋数量" width="180"></el-table-column>
-					<el-table-column prop="phone" label="鸡的数量" width="180"></el-table-column>
-					<el-table-column prop="phone" label="雏鸡数量" width="180"></el-table-column>
-					<el-table-column prop="phone" label="邀请人数" width="180"></el-table-column>
-					<el-table-column prop="phone" label="上级用户手机号" width="180"></el-table-column>
-					<el-table-column prop="status" label="状态" width="180">
-						<template #default="scope">
-							<el-tag :type="scope.row.status === 1 ? 'success' : 'danger'">{{ scope.row.status === 1 ? '启用' : '禁用' }}</el-tag>
-						</template>
-					</el-table-column>
-					<!-- 操作列 -->
-					<el-table-column label="操作" width="180" fixed="right">
-						<template #default="scope">
-							<el-button type="primary" link size="small">编辑</el-button>
-							<el-button type="danger" link size="small">禁用</el-button>
-							<el-button type="success" link size="small">启用</el-button>
-						</template>
-					</el-table-column>
-				</el-table>
-			</div>
-			<!-- 分页 -->
-			<div class="pagination">
-				<el-pagination
-					v-model:current-page="listQuery.pageNo"
-					v-model:page-size="listQuery.pageSize"
-					:page-sizes="[10, 20, 30, 50]"
-					:small="false"
-					:disabled="false"
-					layout="total, sizes, prev, pager, next, jumper"
-					:total="listQuery.total"
-					@size-change="handleSizeChange"
-					@current-change="handleCurrentChange"
-				/>
-			</div>
-		</el-card>
+		<!-- 用户表格 -->
+		<div class="table-container">
+			<el-table border :height="height - 110" :data="userArr" style="width: 100%">
+				<el-table-column prop="phone" label="手机号"></el-table-column>
+				<el-table-column prop="userType" label="用户类型">
+					<template #default="scope">
+						{{ scope.row.userType === 0 ? '普通用户' : '渠道用户' }}
+					</template>
+				</el-table-column>
+				<el-table-column prop="enrolled" label="是否报名" width="120">
+					<template #default="{ row }">
+						<el-tag effect="dark" :type="row.enrolled ? 'success' : 'info'">{{ row.enrolled ? '已报名' : '未报名' }}</el-tag>
+					</template>
+				</el-table-column>
+				<el-table-column prop="subordinateCount" label="下级人数" width="120" />
+				<el-table-column prop="inviteCode" label="邀请码"></el-table-column>
+				<el-table-column prop="createTime" label="创建时间"></el-table-column>
+				<el-table-column label="操作" width="160" fixed="right">
+					<template #default="{ row }">
+						<el-button v-if="row.userType !== 1" type="primary" plain size="small" @click="setUserType(row, 1)">设为渠道用户</el-button>
+						<el-button v-else type="success" plain size="small" @click="setUserType(row, 0)">设为普通用户</el-button>
+					</template>
+				</el-table-column>
+			</el-table>
+		</div>
 	</div>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
-import { Search } from '@element-plus/icons-vue';
+import { ref, onMounted } from 'vue';
 import { useWindowSize } from '@vueuse/core';
+import { userList, updateUserType } from '@/api';
 
 const { width, height } = useWindowSize();
-console.log(width.value, height.value);
 
-const listQuery = reactive({
-	pageNo: 1,
-	pageSize: 10,
-	total: 0,
+// 用户列表数据
+const userArr = ref([]);
+
+// 页面挂载时获取用户列表
+onMounted(() => {
+	getUserList();
 });
-// 初始搜索参数
-const initialSearchForm = {
-	username: '',
-	phone: '',
-	status: '',
-};
 
-const searchForm = ref({ ...initialSearchForm });
+// 获取用户列表
+async function getUserList() {
+	try {
+		const res = await userList();
+		if (res.code !== 200) {
+			ElMessage.error(res.msg);
+			return;
+		}
+		userArr.value = res.data;
+	} catch (error) {
+		ElMessage.error('获取用户列表失败，请稍后重试');
+	}
+}
 
-// userList
-const userList = ref([
-	{
-		username: '用户1',
-		phone: '13800000000',
-		status: 1,
-	},
-	{
-		username: '用户2',
-		phone: '13800000001',
-		status: 0,
-	},
-	{
-		username: '用户3',
-		phone: '13800000002',
-		status: 1,
-	},
-]); // 用户列表
-
-const handleSearch = () => {
-	// 搜索用户
-	console.log('搜索参数:', searchForm.value);
-	// 这里可以添加搜索逻辑
-};
-
-const handleReset = () => {
-	// 重置搜索参数
-	searchForm.value = { ...initialSearchForm };
-	console.log('重置搜索参数');
-};
-
-const handleSizeChange = (val) => {
-	// 分页大小改变
-	console.log(`${val} items per page`);
-	listQuery.pageSize = val;
-	// getList();
-};
-const handleCurrentChange = (value) => {
-	// 分页改变
-	console.log(`current page: ${value}`);
-	listQuery.pageNo = value;
-	// getList();
-};
+async function setUserType(row, userType) {
+	const label = userType === 1 ? '渠道用户' : '普通用户';
+	try {
+		await ElMessageBox.confirm(`确定将该用户设为${label}吗？`, '提示', {
+			type: 'warning',
+		});
+		const res = await updateUserType({ userId: row.id, userType });
+		if (res.code !== 200) {
+			ElMessage.error(res.msg);
+			return;
+		}
+		ElMessage.success('操作成功');
+		getUserList();
+	} catch {
+		// cancelled
+	}
+}
 </script>
 
 <style scoped lang="scss">
-:deep(.el-card__body) {
-	padding: 18px 18px 0px;
-}
 .user-container {
-}
-
-.pagination {
-	padding: 0px 0px 20px;
-	display: flex;
-	justify-content: flex-end;
+	.table-container {
+		background-color: #fff;
+		border-radius: 6px;
+		margin-top: 10px;
+		padding: 10px;
+	}
 }
 </style>

@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import { DataLine, Document, Present, User } from '@element-plus/icons-vue';
+import { DataLine, Document, Money, User, Management } from '@element-plus/icons-vue';
 import { useRoute } from 'vue-router';
 import { computed } from 'vue';
 
@@ -48,10 +48,10 @@ const openMenus = computed(() => {
 
 // 图标
 const icons = {
-	DataLine,
+	Management,
 	Document,
-	Present,
 	User,
+	Money,
 };
 
 // 菜单数据
@@ -60,7 +60,7 @@ const menuItems = [
 		index: '/course',
 		route: '/course',
 		title: '课程管理',
-		icon: icons.DataLine,
+		icon: icons.Management,
 	},
 	{
 		index: '/order',
@@ -75,10 +75,10 @@ const menuItems = [
 		icon: icons.User,
 	},
 	{
-		index: '/reward-store',
-		route: '/reward-store',
-		title: '兑换商城',
-		icon: icons.Present,
+		index: '/payment',
+		route: '/payment',
+		title: '支付管理',
+		icon: icons.Money,
 	},
 ];
 </script>
@@ -92,10 +92,9 @@ const menuItems = [
 	padding: 20px 0;
 
 	img {
-		width: 32px;
+		width: 48px;
 		margin-right: 10px;
-		transform: translate(-1000px, -1000px);
-		filter: drop-shadow(1000px 1000px 0 #fff);
+		border-radius: 48px;
 	}
 
 	.logo-text {
