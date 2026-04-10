@@ -54,6 +54,6 @@ export default defineConfig({
 		},
 	},
 	build: {
-		outDir: 'dist',
+		outDir: 'wsxt-admin',
 	},
 });
