@@ -36,10 +36,11 @@
 			</el-form>
 
 			<div class="tips" v-if="false">默认：admin / 123456</div>
-			<div class="register-link">
+
+			<!-- <div class="register-link">
 				<span>还没有账号？</span>
 				<router-link to="/register">立即注册</router-link>
-			</div>
+			</div> -->
 		</div>
 	</div>
 </template>
